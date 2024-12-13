@@ -1,7 +1,7 @@
 package com.example.Du_An_TTS_Test.Controller;
 
 import com.example.Du_An_TTS_Test.Dto.ProductsElasticsearch;
-import com.example.Du_An_TTS_Test.Dto.daoProducts;
+import com.example.Du_An_TTS_Test.Dto.Dao.daoProducts;
 import com.example.Du_An_TTS_Test.Sevice.ProductsSevice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

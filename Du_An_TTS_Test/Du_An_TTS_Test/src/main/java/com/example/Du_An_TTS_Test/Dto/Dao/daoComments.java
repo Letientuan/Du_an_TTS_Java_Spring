@@ -1,4 +1,4 @@
-package com.example.Du_An_TTS_Test.Dto;
+package com.example.Du_An_TTS_Test.Dto.Dao;
 
 import com.example.Du_An_TTS_Test.Entity.Comments;
 import com.example.Du_An_TTS_Test.Entity.Products;

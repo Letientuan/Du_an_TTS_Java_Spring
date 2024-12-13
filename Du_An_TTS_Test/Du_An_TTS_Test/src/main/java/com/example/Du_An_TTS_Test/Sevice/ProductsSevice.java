@@ -17,7 +17,6 @@ import java.util.Optional;
 public class ProductsSevice {
     @Autowired
     private ProductsRepo productsRepo;
-    private ProductsElasticsearchSevice elasticsearchSevice;
 
     @Cacheable(value = "Products", key = "#id")
     public Products findbyidProduct(Integer id) {

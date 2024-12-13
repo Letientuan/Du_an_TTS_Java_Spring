@@ -1,15 +1,10 @@
 package com.example.Du_An_TTS_Test.Sevice;
 
-import com.example.Du_An_TTS_Test.Dto.daoComments;
 import com.example.Du_An_TTS_Test.Entity.Comments;
 import com.example.Du_An_TTS_Test.Repository.CommentRepo;
-import com.example.Du_An_TTS_Test.exception.AppException;
-import com.example.Du_An_TTS_Test.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 

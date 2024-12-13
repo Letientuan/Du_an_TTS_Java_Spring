@@ -5,6 +5,7 @@ import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.example.Du_An_TTS_Test.Dto.ProductsElasticsearch;
 import com.example.Du_An_TTS_Test.Dto.Request.AuthenticationRequest;
 import com.example.Du_An_TTS_Test.Dto.UserElasticsearch;
+import com.example.Du_An_TTS_Test.Entity.Role;
 import com.example.Du_An_TTS_Test.Entity.Users;
 import com.example.Du_An_TTS_Test.Sevice.ElasticSearchSevice.UserElasticsearchSevice;
 import com.example.Du_An_TTS_Test.Sevice.UsersSevice;
@@ -22,7 +23,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 @RestController
@@ -59,7 +62,6 @@ public class UserElsaticSearchController {
         if (userid != null) {
             UserElasticsearch userElasticsearch = new UserElasticsearch();
             userElasticsearch.setId(userid.getId());
-            userElasticsearch.setRole("USER");
             userElasticsearch.setEmail(userid.getEmail());
             userElasticsearch.setPassword(userid.getPassword());
             userElasticsearch.setCreated_at(userid.getCreated_at());

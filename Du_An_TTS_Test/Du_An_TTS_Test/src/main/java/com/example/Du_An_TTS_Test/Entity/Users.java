@@ -22,7 +22,6 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Size( min = 6)
     @NotNull(message = "username cannot be null")
     @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String username;

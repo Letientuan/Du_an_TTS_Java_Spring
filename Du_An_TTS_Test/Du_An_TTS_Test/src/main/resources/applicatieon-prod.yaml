@@ -1,0 +1,4 @@
+jwt:
+  signerky: "ZEQuz8tNww3X/PM+e6jxI312rtbj0YWfF2d+gHSStKLRFDJCWV2MUevuliyHuzJq"
+  valid-duration: 7200
+  refreshable-duration: 72000

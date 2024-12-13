@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -20,8 +21,10 @@ import lombok.experimental.FieldDefaults;
 @Entity
 public class Role {
     @Id
+    @NotNull(message = "name cannot be null")
     String name;
 
+    @NotNull(message = "description cannot be null")
     String description;
 
     @ManyToMany(cascade = CascadeType.PERSIST)

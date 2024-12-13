@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import javax.validation.constraints.Size;
 import java.sql.Date;
 import java.util.Set;
 
@@ -20,9 +21,11 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
+    @Size( min = 6,max = 15)
     @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String username;
 
+    @Size( min = 6)
     String password;
 
     String email;

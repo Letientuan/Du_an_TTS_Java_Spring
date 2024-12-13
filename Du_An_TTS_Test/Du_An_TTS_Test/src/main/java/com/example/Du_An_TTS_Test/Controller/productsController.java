@@ -27,7 +27,6 @@ public class productsController {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private daoProducts daoproducts;
 
 
     private static final String TOPIC = "updateViewID";

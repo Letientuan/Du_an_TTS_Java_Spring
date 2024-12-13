@@ -22,6 +22,7 @@ public class Products implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
     private String name;
 
     private Double price;

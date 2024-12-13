@@ -83,6 +83,7 @@ public class UserElasticsearchSevice {
 
         return mapSearchResponse;
     }
+
     public SearchResponse<UserElasticsearch> fieldNameSeviceUser(String name) throws IOException {
         Supplier<Query> supplier = UserElasticSearch.suppliernameUser(name);
         SearchResponse<UserElasticsearch> mapSearchResponse = elasticsearchClient.search(s -> s.index("users").query(supplier.get()), UserElasticsearch.class);

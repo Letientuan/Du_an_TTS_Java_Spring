@@ -13,6 +13,7 @@ public class CommentSevice {
 
     @Autowired
     private CommentRepo commentRepo;
+
     public List<Comments> getAll() {
         List<Comments> commentsList = commentRepo.findAll();
         return commentsList;
@@ -20,7 +21,7 @@ public class CommentSevice {
 
     public Comments addComment(Comments comment) {
 
-            commentRepo.save(comment);
+        commentRepo.save(comment);
 
 
         return comment;

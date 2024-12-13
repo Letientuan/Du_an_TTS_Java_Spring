@@ -1,7 +1,6 @@
 package com.example.Du_An_TTS_Test.Controller;
 
 import com.example.Du_An_TTS_Test.Dto.ProductsElasticsearch;
-import com.example.Du_An_TTS_Test.Dto.Dao.daoProducts;
 import com.example.Du_An_TTS_Test.Sevice.ProductsSevice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +25,6 @@ public class productsController {
 
     @Autowired
     private ObjectMapper objectMapper;
-
 
 
     private static final String TOPIC = "updateViewID";
@@ -83,7 +81,7 @@ public class productsController {
             productsSevice.updateProduct(id, product);
             String logMessage = objectMapper.writeValueAsString(product);
             kafkaTemplate.send("updateProduct", logMessage);
-            return  ResponseEntity.ok(product);
+            return ResponseEntity.ok(product);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>("update thất bại", HttpStatus.INTERNAL_SERVER_ERROR);

@@ -60,10 +60,10 @@ public class ProductsElasticsearchSevice {
         if (existingProductOpt.isPresent()) {
             try {
                 ProductsElasticsearch existingProduct = existingProductOpt.get();
-                existingProduct.setView(product.getView().intValue()+1);
+                existingProduct.setView(product.getView().intValue() + 1);
                 elasticsearchRepository.save(existingProduct);
             } catch (NumberFormatException e) {
-                System.err.println("Invalid view number: " );
+                System.err.println("Invalid view number: ");
             }
 
         } else {

@@ -1,6 +1,6 @@
 package com.example.Du_An_TTS_Test.Controller;
 
-import com.example.Du_An_TTS_Test.Dto.Dao.daoComments;
+
 import com.example.Du_An_TTS_Test.Entity.Comments;
 import com.example.Du_An_TTS_Test.Repository.CommentRepo;
 import com.example.Du_An_TTS_Test.Sevice.CommentSevice;
@@ -21,7 +21,6 @@ public class comentsController {
 
     @Autowired
     private CommentRepo commentRepo;
-    daoComments daoComments;
 
     @GetMapping("")
     public ResponseEntity<?> GetAll() {

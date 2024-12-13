@@ -2,6 +2,7 @@ package com.example.Du_An_TTS_Test.Sevice;
 
 import com.example.Du_An_TTS_Test.Entity.Products;
 import com.example.Du_An_TTS_Test.Repository.ProductsRepo;
+import com.example.Du_An_TTS_Test.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -18,7 +19,8 @@ public class ProductsSevice {
 
     @Cacheable(value = "Products", key = "#id")
     public Products findbyidProduct(Integer id) {
-        Products products = productsRepo.findById(id).orElse(null);
+        Products products = productsRepo.findById(id).orElseThrow(()
+                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
         return products;
     }
 
@@ -26,7 +28,8 @@ public class ProductsSevice {
     public Products findbyidProducts(Integer id) {
         Optional<Products> productOptional = productsRepo.findById(id);
 
-        return productOptional.orElse(null);
+        return productOptional.orElseThrow(()
+                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
     }
 
     @CachePut(value = "Products", key = "#products.id")
@@ -39,13 +42,14 @@ public class ProductsSevice {
 
     @CacheEvict(value = "Products", key = "#id")
     public void deleteProduct(Integer id) {
-        productsRepo.deleteById(id);
+        Products products = findbyidProducts(id);
+        productsRepo.deleteById(products.getId());
     }
 
     //    lắng nghe kafka
 
-    public Products UPdateview(Integer ID) {
-        Products products = findbyidProduct(ID);
+    public Products Updateview(Integer ID) {
+        Products products = findbyidProduct(ID) ;
         if (ID != null) {
             try {
 
@@ -67,7 +71,8 @@ public class ProductsSevice {
             o.setView(view.intValue() + 1);
             Products products = productsRepo.save(o);
             return products;
-        }).orElse(null);
+        }).orElseThrow(()
+                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
     }
 
     @CacheEvict(value = "Products", key = "#id")
@@ -83,7 +88,8 @@ public class ProductsSevice {
             o.setCreated_by(products.getCreated_by());
             Products products1 = productsRepo.save(o);
             return products1;
-        }).orElse(null);
+        }).orElseThrow(()
+                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
     }
 
 }

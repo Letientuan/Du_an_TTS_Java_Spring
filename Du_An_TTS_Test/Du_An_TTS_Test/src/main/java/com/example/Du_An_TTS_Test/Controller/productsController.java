@@ -37,7 +37,7 @@ public class productsController {
 
     @GetMapping("ProductDetail/{id}")
     public ResponseEntity<?> getbyidProduct(@PathVariable Integer id) throws JsonProcessingException {
-        Products products = productsSevice.UPdateview(id);
+        Products products = productsSevice.Updateview(id);
         String logMessage = objectMapper.writeValueAsString(products);
         kafkaTemplate.send(TOPIC, logMessage);
 
@@ -90,10 +90,7 @@ public class productsController {
 
     @DeleteMapping("Elasticsearch/deleteProduct/{id}")
     public ResponseEntity<?> deleteProductElasticsearch(@PathVariable Integer id) {
-        Products products = productsSevice.findbyidProducts(id);
-        if(products==null){
-            return ResponseEntity.ok("không tìm thấy id sản phẩm");
-        }
+//        Products products = productsSevice.findbyidProducts(id);
         productsSevice.deleteProduct(id);
         String logMessage = "" + id;
         kafkaTemplate.send("deleteProduct", logMessage);

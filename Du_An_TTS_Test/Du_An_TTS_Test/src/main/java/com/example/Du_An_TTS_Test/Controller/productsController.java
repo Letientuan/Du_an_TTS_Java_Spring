@@ -90,6 +90,10 @@ public class productsController {
 
     @DeleteMapping("Elasticsearch/deleteProduct/{id}")
     public ResponseEntity<?> deleteProductElasticsearch(@PathVariable Integer id) {
+        Products products = productsSevice.findbyidProducts(id);
+        if(products==null){
+            return ResponseEntity.ok("không tìm thấy id sản phẩm");
+        }
         productsSevice.deleteProduct(id);
         String logMessage = "" + id;
         kafkaTemplate.send("deleteProduct", logMessage);

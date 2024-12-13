@@ -1,12 +1,12 @@
 package com.example.Du_An_TTS_Test.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.validation.constraints.Size;
-import java.sql.Date;
 import java.util.Set;
 
 @Getter
@@ -22,16 +22,16 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Size( min = 6,max = 15)
+    @Size( min = 6)
     @NotNull(message = "username cannot be null")
     @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String username;
 
     @NotNull(message = "password cannot be null")
-    @Size( min = 6)
+
     String password;
 
-    @NotNull(message = "email cannot be null")
+
     String email;
 
     @ManyToMany

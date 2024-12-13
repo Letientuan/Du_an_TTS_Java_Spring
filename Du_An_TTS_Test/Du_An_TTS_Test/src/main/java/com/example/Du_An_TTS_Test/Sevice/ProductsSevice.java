@@ -2,13 +2,11 @@ package com.example.Du_An_TTS_Test.Sevice;
 
 import com.example.Du_An_TTS_Test.Entity.Products;
 import com.example.Du_An_TTS_Test.Repository.ProductsRepo;
-import com.example.Du_An_TTS_Test.Sevice.ElasticSearchSevice.ProductsElasticsearchSevice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.scheduling.annotation.Scheduled;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,10 +22,11 @@ public class ProductsSevice {
         return products;
     }
 
-    @Cacheable(value = "Products", key = "#id")
+    @Cacheable(value = "Products", key = "#id", unless = "#result == null")
     public Products findbyidProducts(Integer id) {
-        Products products = productsRepo.findById(id).orElse(null);
-        return products;
+        Optional<Products> productOptional = productsRepo.findById(id);
+
+        return productOptional.orElse(null);
     }
 
     @CachePut(value = "Products", key = "#products.id")

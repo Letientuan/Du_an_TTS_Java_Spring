@@ -49,7 +49,7 @@ public class SecurityConfig {
             "Admin/products/Elasticsearch/deleteProduct", "ElasticSearch/User/delete"
     };
     public final String[] User = {
-            "/Admin/products/ProductDetail/**", "/comment/**"
+            "/Admin/products/ProductDetail/**", "/comment/**","/ElasticSearch/Product/matchAllProduct"
     };
 
     @Bean

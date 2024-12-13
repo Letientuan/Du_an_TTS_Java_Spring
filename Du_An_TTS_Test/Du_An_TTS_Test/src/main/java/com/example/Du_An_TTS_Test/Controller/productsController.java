@@ -72,19 +72,19 @@ public class productsController {
         String logMessage = objectMapper.writeValueAsString(products1);
         kafkaTemplate.send("addproduct", logMessage);
 
-        return ResponseEntity.ok("Add thành công");
+        return ResponseEntity.ok(products1);
     }
 
 
     @PutMapping("Elasticsearch/updateProduct/{id}")
-    public ResponseEntity<String> updateProduct(@PathVariable Integer id, @RequestBody Products product) {
+    public ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody Products product) {
         try {
 
             product.setId(id);
             productsSevice.updateProduct(id, product);
             String logMessage = objectMapper.writeValueAsString(product);
             kafkaTemplate.send("updateProduct", logMessage);
-            return new ResponseEntity<>("update thành công", HttpStatus.OK);
+            return  ResponseEntity.ok(product);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>("update thất bại", HttpStatus.INTERNAL_SERVER_ERROR);

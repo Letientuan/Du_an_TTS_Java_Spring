@@ -4,6 +4,7 @@ import com.example.Du_An_TTS_Test.Entity.Role;
 import com.example.Du_An_TTS_Test.Entity.Users;
 import com.example.Du_An_TTS_Test.Repository.RoleRepo;
 import com.example.Du_An_TTS_Test.Repository.UsersRepo;
+import com.example.Du_An_TTS_Test.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,8 +29,9 @@ public class UsersSevice {
         return usersList;
     }
 
-    public Optional<Users> findByUsername(String username) {
-        return usersRepo.findByUsername(username);
+    public Users findByUsername(String username) {
+        return usersRepo.findByUsername(username).orElseThrow(()
+                -> new RuntimeException(ErrorCode.INVALID_NAME.getMessage()));
     }
 
     public void deleteUser(Integer id) {
@@ -38,7 +40,6 @@ public class UsersSevice {
 
     public Users addUser(Users user) {
 
-
         Users users = new Users();
         users.setUsername(user.getUsername());
         Set<Role> role = new HashSet<>();
@@ -46,12 +47,12 @@ public class UsersSevice {
         roles.setName("USER");
         roles.setDescription("WHITE");
 
-
         Optional<Role> role1 = roleRepo.findById(roles.getName());
         if (role1.isEmpty()) {
             roleRepo.save(roles);
             role.add(roles);
         }
+
         users.setRoles(role);
         users.setPassword(passwordEncoder.encode(user.getPassword()));
         users.setCreated_at(user.getCreated_at());
@@ -59,8 +60,6 @@ public class UsersSevice {
         users.setEmail(user.getEmail());
 
         return usersRepo.save(users);
-
-
     }
 
     public Users updateUser(Integer id, Users users) {
@@ -72,6 +71,7 @@ public class UsersSevice {
             o.setPassword(users.getPassword());
             Users save = usersRepo.save(o);
             return save;
-        }).orElse(null);
+        }).orElseThrow(()
+                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
     }
 }

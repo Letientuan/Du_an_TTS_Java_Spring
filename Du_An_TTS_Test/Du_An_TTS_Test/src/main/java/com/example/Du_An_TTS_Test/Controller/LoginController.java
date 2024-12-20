@@ -62,19 +62,15 @@ public class LoginController {
             @RequestParam(name = "username") String username,
             @RequestParam(name = "password") String password) {
 
-        Optional<Users> userOpt = usersService.findByUsername(username);
+        Users userOpt = usersService.findByUsername(username);
 
-        if (userOpt.isPresent()) {
-            Users user = userOpt.get();
 
-            if (passwordEncoder.matches(password, user.getPassword())) {
+
+            if (passwordEncoder.matches(password, userOpt.getPassword())) {
                 return ResponseEntity.ok("Login successful for user: " + username);
             } else {
                 return ResponseEntity.status(401).body("Incorrect password");
             }
-        } else {
-            return ResponseEntity.status(404).body("User not found");
-        }
     }
 
 

@@ -2,6 +2,7 @@ package com.example.Du_An_TTS_Test.Sevice;
 
 import com.example.Du_An_TTS_Test.Entity.Comments;
 import com.example.Du_An_TTS_Test.Repository.CommentRepo;
+import com.example.Du_An_TTS_Test.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +21,7 @@ public class CommentSevice {
     }
 
     public Comments addComment(Comments comment) {
-
         commentRepo.save(comment);
-
-
         return comment;
     }
 
@@ -32,7 +30,8 @@ public class CommentSevice {
         return optional.map(o -> {
             commentRepo.delete(o);
             return o;
-        }).orElse(null);
+        }).orElseThrow(()
+                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
     }
 
     public Comments update(Integer id, Comments newcomments) {
@@ -44,7 +43,8 @@ public class CommentSevice {
             o.setCreated_at(newcomments.getCreated_at());
             o.setComment_text(newcomments.getComment_text());
             return commentRepo.save(o);
-        }).orElse(null);
+        }).orElseThrow(()
+                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
     }
 
 }

@@ -2,8 +2,10 @@ package com.example.Du_An_TTS_Test.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.io.Serializable;
@@ -24,6 +26,9 @@ public class Products implements Serializable{
     private Integer id;
 
     @NotNull(message = "name cannot be null")
+    @Column(nullable = false, length = 512, unique = true)
+    @NotBlank(message = "Product name cannot be blank")
+    @Length(min = 5, max = 512, message = "Product name must be between 5-512 characters")
     private String name;
 
     @NotNull(message = "price cannot be null")

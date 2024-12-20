@@ -49,19 +49,8 @@ public class ProductsSevice {
     //    lắng nghe kafka
 
     public Products Updateview(Integer ID) {
-        Products products = findbyidProduct(ID) ;
-        if (ID != null) {
-            try {
-
-                update(ID, products.getView().intValue());
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid view number: " + ID);
-            }
-
-        } else {
-            System.out.println("idProduct is null, skipping update.");
-        }
-        return products;
+        Products products = findbyidProduct(ID);
+        return update(ID, products.getView().intValue());
     }
 
     @CacheEvict(value = "Products", key = "#id")

@@ -4,6 +4,7 @@ import com.example.Du_An_TTS_Test.Dto.ProductsElasticsearch;
 import com.example.Du_An_TTS_Test.Sevice.ProductsSevice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,28 +46,27 @@ public class productsController {
     }
 
     @PostMapping("add/Elasticsearch")
-    public ResponseEntity<?> addProductElasticsearch(@RequestBody ProductsElasticsearch products1) throws JsonProcessingException {
-
-        Products products = new Products();
-        products.setCreated_by(products1.getCreated_by());
-        products.setStock_quantity(products1.getStock_quantity());
-        products.setPrice(products1.getPrice());
-        products.setName(products1.getName());
-        products.setView(1);
-        products.setCreated_at(products1.getCreated_at());
-
-        Products products2 = productsSevice.addProduct(products);
+    public ResponseEntity<?> addProductElasticsearch(@Valid @RequestBody  Products products1) throws JsonProcessingException {
+        products1.setView(1);
+        Products products2 = productsSevice.addProduct(products1);
 
         if (products2 == null || products2.getId() == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to add product. ID was not assigned.");
         }
 
+        ProductsElasticsearch products = new ProductsElasticsearch();
+        products.setCreated_by(products1.getCreated_by());
+        products.setStock_quantity(products1.getStock_quantity());
+        products.setPrice(products1.getPrice());
+        products.setName(products1.getName());
+        products.setView(products2.getView());
+        products.setCreated_at(products1.getCreated_at());
 
-        products1.setId(products2.getId());
-        products1.setView(products2.getView());
+        products.setId(products1.getId());
 
-        String logMessage = objectMapper.writeValueAsString(products1);
+
+        String logMessage = objectMapper.writeValueAsString(products);
         kafkaTemplate.send("addproduct", logMessage);
 
         return ResponseEntity.ok(products1);

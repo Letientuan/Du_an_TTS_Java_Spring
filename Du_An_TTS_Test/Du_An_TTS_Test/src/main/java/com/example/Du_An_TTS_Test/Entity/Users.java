@@ -1,9 +1,7 @@
 package com.example.Du_An_TTS_Test.Entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -26,11 +24,12 @@ public class Users {
     @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String username;
 
-    @NotNull(message = "password cannot be null")
-
+    @NotEmpty(message = "Password must be 8 characters or more")
+    @Min(value = 8, message = "Password must be 8 characters or more")
     String password;
 
 
+    @NotNull(message = "Email cannot be null")
     String email;
 
     @ManyToMany

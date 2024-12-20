@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableCaching
 @EnableScheduling
-//@EnableElasticsearchRepositories(basePackages = "com.example.Du_An_TTS_Test.Repository")
 public class DuAnTtsTestApplication {
 
 	public static void main(String[] args) {

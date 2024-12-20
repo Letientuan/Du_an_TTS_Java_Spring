@@ -48,24 +48,7 @@ public class productsController {
     @PostMapping("add/Elasticsearch")
     public ResponseEntity<?> addProductElasticsearch(@Valid @RequestBody  Products products1) throws JsonProcessingException {
         products1.setView(1);
-        Products products2 = productsSevice.addProduct(products1);
-
-        if (products2 == null || products2.getId() == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to add product. ID was not assigned.");
-        }
-
-        ProductsElasticsearch products = new ProductsElasticsearch();
-        products.setCreated_by(products1.getCreated_by());
-        products.setStock_quantity(products1.getStock_quantity());
-        products.setPrice(products1.getPrice());
-        products.setName(products1.getName());
-        products.setView(products2.getView());
-        products.setCreated_at(products1.getCreated_at());
-
-        products.setId(products1.getId());
-
-
+        Products products = productsSevice.addProduct(products1);
         String logMessage = objectMapper.writeValueAsString(products);
         kafkaTemplate.send("addproduct", logMessage);
 

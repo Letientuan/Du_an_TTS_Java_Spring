@@ -2,7 +2,10 @@ package com.example.Du_An_TTS_Test.Sevice.ElasticSearchSevice;
 
 import com.example.Du_An_TTS_Test.Dto.ProductsElasticsearch;
 import com.example.Du_An_TTS_Test.Entity.Products;
+import com.example.Du_An_TTS_Test.Map.ProductsMapper;
 import com.example.Du_An_TTS_Test.Repository.ProductElasticsearchRepository;
+import com.example.Du_An_TTS_Test.Repository.ProductsRepo;
+import com.example.Du_An_TTS_Test.exception.ErrorCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,9 @@ public class ProductsElasticsearchSevice {
     @Autowired
     private ProductElasticsearchRepository elasticsearchRepository;
 
+    @Autowired
+    private ProductsRepo productsRepo;
+
     public Iterable<ProductsElasticsearch> getProducts() {
         return elasticsearchRepository.findAll();
     }
@@ -31,20 +37,10 @@ public class ProductsElasticsearchSevice {
     public void addProduct(String logMessage) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            Products product = objectMapper.readValue(logMessage, Products.class);
+            ProductsElasticsearch product = objectMapper.readValue(logMessage, ProductsElasticsearch.class);
 
 
-            ProductsElasticsearch productElasticsearch = new ProductsElasticsearch();
-            productElasticsearch.setId(product.getId());
-            productElasticsearch.setName(product.getName());
-            productElasticsearch.setPrice(product.getPrice());
-            productElasticsearch.setStock_quantity(product.getStock_quantity());
-            productElasticsearch.setCreated_at(product.getCreated_at());
-            productElasticsearch.setCreated_by(product.getCreated_by());
-            productElasticsearch.setUpdated_at(product.getUpdated_at());
-            productElasticsearch.setView(product.getView());
-
-            elasticsearchRepository.save(productElasticsearch);
+            elasticsearchRepository.save(product);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,19 +52,18 @@ public class ProductsElasticsearchSevice {
         ObjectMapper objectMapper = new ObjectMapper();
         Products product = objectMapper.readValue(messange, Products.class);
 
-        Optional<ProductsElasticsearch> existingProductOpt = elasticsearchRepository.findById(product.getId());
-        if (existingProductOpt.isPresent()) {
-            try {
-                ProductsElasticsearch existingProduct = existingProductOpt.get();
-                existingProduct.setView(product.getView().intValue() + 1);
-                elasticsearchRepository.save(existingProduct);
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid view number: ");
-            }
+        ProductsElasticsearch existingProductOpt = elasticsearchRepository.findById(product.getId()).orElseThrow(()
+                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
 
-        } else {
-            System.out.println("idProduct is null, skipping update.");
+        try {
+            ProductsElasticsearch existingProduct = existingProductOpt;
+            existingProduct.setView(product.getView().intValue() + 1);
+            elasticsearchRepository.save(existingProduct);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid view number: ");
         }
+
+
     }
 
     @KafkaListener(topics = "updateProduct", groupId = "products-group")
@@ -77,41 +72,21 @@ public class ProductsElasticsearchSevice {
             ObjectMapper objectMapper = new ObjectMapper();
             Products product = objectMapper.readValue(logMessage, Products.class);
 
-            Optional<ProductsElasticsearch> existingProductOpt = elasticsearchRepository.findById(product.getId());
-            if (existingProductOpt.isPresent()) {
-                ProductsElasticsearch existingProduct = existingProductOpt.get();
+            ProductsElasticsearch existingProductOpt = elasticsearchRepository.findById(product.getId()).orElseThrow(()
+                    -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
 
-                existingProduct.setName(product.getName());
-                existingProduct.setPrice(product.getPrice());
-                existingProduct.setStock_quantity(product.getStock_quantity());
-                existingProduct.setCreated_at(product.getCreated_at());
-                existingProduct.setCreated_by(product.getCreated_by());
-                existingProduct.setUpdated_at(product.getUpdated_at());
-                existingProduct.setView(product.getView());
+            ProductsElasticsearch existingProduct = existingProductOpt;
 
-                elasticsearchRepository.save(existingProduct);
-            } else {
+            existingProduct.setName(product.getName());
+            existingProduct.setPrice(product.getPrice());
+            existingProduct.setStock_quantity(product.getStock_quantity());
+            existingProduct.setCreated_at(product.getCreated_at());
+            existingProduct.setCreated_by(product.getCreated_by());
+            existingProduct.setUpdated_at(product.getUpdated_at());
+            existingProduct.setView(product.getView());
 
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            elasticsearchRepository.save(existingProduct);
 
-    }
-
-    public void updateProductview(Number View, Integer id) {
-        try {
-            Optional<ProductsElasticsearch> existingProductOpt = elasticsearchRepository.findById(id);
-            if (existingProductOpt.isPresent()) {
-                ProductsElasticsearch existingProduct = existingProductOpt.get();
-
-
-                existingProduct.setView(View.intValue() + 1);
-
-                elasticsearchRepository.save(existingProduct);
-            } else {
-
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

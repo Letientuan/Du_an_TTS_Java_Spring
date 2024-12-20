@@ -26,8 +26,6 @@ public class Products implements Serializable{
     private Integer id;
 
     @NotNull(message = "name cannot be null")
-    @Column(nullable = false, length = 512, unique = true)
-    @NotBlank(message = "Product name cannot be blank")
     @Length(min = 5, max = 512, message = "Product name must be between 5-512 characters")
     private String name;
 

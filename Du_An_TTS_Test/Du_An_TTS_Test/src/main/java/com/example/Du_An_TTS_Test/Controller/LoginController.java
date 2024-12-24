@@ -50,7 +50,7 @@ public class LoginController {
     }
 
     @PostMapping("introspect")
-    public ApiResponse<introspectRepon>checktoken(@RequestBody IntrospectRequet request) throws ParseException, JOSEException {
+    public ApiResponse<introspectRepon> checktoken(@RequestBody IntrospectRequet request) throws ParseException, JOSEException {
         var result = authenticationSevice.introspectRepon(request);
         return ApiResponse.<introspectRepon>builder()
                 .result(result)
@@ -60,7 +60,7 @@ public class LoginController {
 
     @PostMapping("logout")
     public ApiResponse<Void> logOut(@RequestBody logoutRequet request) throws ParseException, JOSEException {
-      authenticationSevice.logOut(request);
+        authenticationSevice.logOut(request);
         return ApiResponse.<Void>builder()
                 .build();
 

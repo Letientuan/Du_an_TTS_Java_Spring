@@ -48,7 +48,7 @@ public class ProductsElasticsearchSevice {
     }
 
     @KafkaListener(topics = "updateViewID")
-    public void listen(String messange) throws JsonProcessingException {
+    public void updateViewProduct(String messange) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         Products product = objectMapper.readValue(messange, Products.class);
 
@@ -74,7 +74,6 @@ public class ProductsElasticsearchSevice {
 
             ProductsElasticsearch existingProductOpt = elasticsearchRepository.findById(product.getId()).orElseThrow(()
                     -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
-
             ProductsElasticsearch existingProduct = existingProductOpt;
 
             existingProduct.setName(product.getName());

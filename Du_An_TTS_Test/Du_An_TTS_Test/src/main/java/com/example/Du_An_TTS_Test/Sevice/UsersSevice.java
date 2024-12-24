@@ -1,7 +1,9 @@
 package com.example.Du_An_TTS_Test.Sevice;
 
+import com.example.Du_An_TTS_Test.Dto.UserElasticsearch;
 import com.example.Du_An_TTS_Test.Entity.Role;
 import com.example.Du_An_TTS_Test.Entity.Users;
+import com.example.Du_An_TTS_Test.Map.UserMapper;
 import com.example.Du_An_TTS_Test.Repository.RoleRepo;
 import com.example.Du_An_TTS_Test.Repository.UsersRepo;
 import com.example.Du_An_TTS_Test.exception.ErrorCode;
@@ -62,16 +64,11 @@ public class UsersSevice {
         return usersRepo.save(users);
     }
 
-    public Users updateUser(Integer id, Users users) {
-        Optional<Users> optional = usersRepo.findById(id);
-        return optional.map(o -> {
-            o.setEmail(users.getEmail());
-            o.setUpdated_at(users.getUpdated_at());
-            o.setUsername(users.getUsername());
-            o.setPassword(users.getPassword());
-            Users save = usersRepo.save(o);
-            return save;
-        }).orElseThrow(()
+    public Users updateUser(Integer id, UserElasticsearch users) {
+        Users optional = usersRepo.findById(id).orElseThrow(()
                 -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
+        UserMapper.USER_MAPPER.updateUserFromDto(users, optional);
+        return usersRepo.save(optional);
+
     }
 }

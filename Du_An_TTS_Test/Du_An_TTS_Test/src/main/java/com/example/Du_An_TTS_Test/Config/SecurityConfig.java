@@ -2,7 +2,6 @@ package com.example.Du_An_TTS_Test.Config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,23 +9,18 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+
 
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
+
 
 @Configuration
 @EnableWebSecurity
@@ -35,52 +29,57 @@ public class SecurityConfig {
 
     @Value("${jwt.signerky}")
     private String signerky;
-
     @Autowired
-    private JwtDecoder jwtDecoder;
+    CustomJwtDecoder customJwtDecoder;
 
-    public final String[] PUBLIC_ENDPOINS = {
-            "/User/add", "comment/add", "login"
+
+    private final String[] PUBLIC_ENDPOINS = {
+            "/User/add", "comment/add",
+            "/auth/introspect", "/comment/**"
     };
-    public final String[] PUBLIC_ADMIN_GET = {
+    private final String[] PUBLIC_ADMIN_GET = {
             "/User/getAll", "/User/matchAllUser"
     };
-    public final String[] PUBLIC_ADMIN_DELETE = {
-            "Admin/products/Elasticsearch/deleteProduct", "ElasticSearch/User/delete"
+    private final String[] PUBLIC_ADMIN_DELETE = {
+            "Admin/products/Elasticsearch/deleteProduct",
+            "ElasticSearch/User/delete"
     };
-    public final String[] User = {
-            "/Admin/products/ProductDetail/**", "/comment/**", "/ElasticSearch/Product/matchAllProduct"
+    private final String[] User = {
+            "/Admin/products/ProductDetail/**",
+            "/ElasticSearch/Product/matchAllProduct",
+            "/auth/login", "/auth/logout"
     };
 
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request ->
-                request
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(User).permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ADMIN_GET).hasAuthority("SCOP_ADMIN")
                         .requestMatchers(HttpMethod.POST, "Admin/products/add/Elasticsearch").hasAuthority("SCOP_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "admin/products/Elasticsearch/updateProduct/**").hasAuthority("SCOP_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, PUBLIC_ADMIN_DELETE).hasAuthority("SCOP_ADMIN")
-                        .requestMatchers(User).permitAll()
-                        .anyRequest().authenticated()
-        );
-        http.oauth2ResourceServer(outh2 ->
-                outh2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()))
-        );
-        http.csrf(AbstractHttpConfigurer::disable);
+                        .anyRequest()
+                        .authenticated())
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwtConfigurer -> jwtConfigurer
+                                .decoder(customJwtDecoder)
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
+                .csrf(AbstractHttpConfigurer::disable);
 
-        return http.build();
+        return httpSecurity.build();
     }
 
-
     @Bean
-    JwtDecoder jwtDecoder() {
+    public JwtDecoder jwtDecoder() {
         SecretKeySpec secretKeySpec = new SecretKeySpec(signerky.getBytes(), "HS512");
-        return NimbusJwtDecoder
-                .withSecretKey(secretKeySpec)
+        return NimbusJwtDecoder.withSecretKey(secretKeySpec)
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();
-
     }
 
     @Bean

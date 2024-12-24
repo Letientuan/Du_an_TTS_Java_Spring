@@ -3,6 +3,7 @@ package com.example.Du_An_TTS_Test.Controller;
 import com.example.Du_An_TTS_Test.Dto.Repon.ApiResponse;
 import com.example.Du_An_TTS_Test.Dto.Repon.IntrospectRequet;
 import com.example.Du_An_TTS_Test.Dto.Repon.introspectRepon;
+import com.example.Du_An_TTS_Test.Dto.Repon.logoutRequet;
 import com.example.Du_An_TTS_Test.Dto.Request.AuthenticationRequest;
 import com.example.Du_An_TTS_Test.Entity.Users;
 
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class LoginController {
@@ -49,7 +50,7 @@ public class LoginController {
     }
 
     @PostMapping("introspect")
-    public ApiResponse<introspectRepon> getAllUsers(@RequestBody IntrospectRequet request) throws ParseException, JOSEException {
+    public ApiResponse<introspectRepon>checktoken(@RequestBody IntrospectRequet request) throws ParseException, JOSEException {
         var result = authenticationSevice.introspectRepon(request);
         return ApiResponse.<introspectRepon>builder()
                 .result(result)
@@ -57,21 +58,29 @@ public class LoginController {
 
     }
 
-    @PostMapping("user/login")
-    public ResponseEntity<String> login(
-            @RequestParam(name = "username") String username,
-            @RequestParam(name = "password") String password) {
+    @PostMapping("logout")
+    public ApiResponse<Void> logOut(@RequestBody logoutRequet request) throws ParseException, JOSEException {
+      authenticationSevice.logOut(request);
+        return ApiResponse.<Void>builder()
+                .build();
 
-        Users userOpt = usersService.findByUsername(username);
-
-
-
-            if (passwordEncoder.matches(password, userOpt.getPassword())) {
-                return ResponseEntity.ok("Login successful for user: " + username);
-            } else {
-                return ResponseEntity.status(401).body("Incorrect password");
-            }
     }
+
+//    @PostMapping("user/login")
+//    public ResponseEntity<String> login(
+//            @RequestParam(name = "username") String username,
+//            @RequestParam(name = "password") String password) {
+//
+//        Users userOpt = usersService.findByUsername(username);
+//
+//
+//
+//            if (passwordEncoder.matches(password, userOpt.getPassword())) {
+//                return ResponseEntity.ok("Login successful for user: " + username);
+//            } else {
+//                return ResponseEntity.status(401).body("Incorrect password");
+//            }
+//    }
 
 
     @PostMapping("addUser")

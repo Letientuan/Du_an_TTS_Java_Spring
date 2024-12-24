@@ -1,5 +1,6 @@
 package com.example.Du_An_TTS_Test.Controller.ElasticShearchController;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.example.Du_An_TTS_Test.Dto.ProductsElasticsearch;
@@ -60,13 +61,8 @@ public class UserElsaticSearchController {
 
         Users userid = usersSevice.addUser(users);
         if (userid != null) {
-            UserElasticsearch userElasticsearch = new UserElasticsearch();
-            userElasticsearch.setId(userid.getId());
-            userElasticsearch.setEmail(userid.getEmail());
-            userElasticsearch.setPassword(userid.getPassword());
-            userElasticsearch.setCreated_at(userid.getCreated_at());
-            userElasticsearch.setUsername(userid.getUsername());
-            String logMessage = objectMapper.writeValueAsString(userElasticsearch);
+
+            String logMessage = objectMapper.writeValueAsString(userid);
             kafkaTemplate.send("addUser", logMessage);
 
             return ResponseEntity.ok("add thành công");
@@ -77,7 +73,7 @@ public class UserElsaticSearchController {
 
 
     @PutMapping("update/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody Users users) throws JsonProcessingException {
+    public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody UserElasticsearch users) throws JsonProcessingException {
 
         users.setId(id);
         Users userid = usersSevice.updateUser(id, users);

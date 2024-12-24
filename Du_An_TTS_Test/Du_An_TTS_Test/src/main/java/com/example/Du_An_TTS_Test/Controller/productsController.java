@@ -38,7 +38,7 @@ public class productsController {
 
     @GetMapping("ProductDetail/{id}")
     public ResponseEntity<?> getbyidProduct(@PathVariable Integer id) throws JsonProcessingException {
-        Products products = productsSevice.Updateview(id);
+        Products products = productsSevice.updateView(id);
         String logMessage = objectMapper.writeValueAsString(products);
         kafkaTemplate.send(TOPIC, logMessage);
 
@@ -46,7 +46,7 @@ public class productsController {
     }
 
     @PostMapping("add/Elasticsearch")
-    public ResponseEntity<?> addProductElasticsearch(@Valid @RequestBody  Products products1) throws JsonProcessingException {
+    public ResponseEntity<?> addProductElasticsearch(@Valid @RequestBody Products products1) throws JsonProcessingException {
         products1.setView(1);
         Products products = productsSevice.addProduct(products1);
         String logMessage = objectMapper.writeValueAsString(products);
@@ -57,27 +57,37 @@ public class productsController {
 
 
     @PutMapping("Elasticsearch/updateProduct/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody Products product) {
+    public ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody ProductsElasticsearch product) {
+        product.setId(id);
         try {
+            Products products = productsSevice.updateProduct(id, product);
+            if (products != null) {
 
-            product.setId(id);
-            productsSevice.updateProduct(id, product);
-            String logMessage = objectMapper.writeValueAsString(product);
-            kafkaTemplate.send("updateProduct", logMessage);
-            return ResponseEntity.ok(product);
+                String logMessage = objectMapper.writeValueAsString(product);
+                kafkaTemplate.send("updateProduct", logMessage);
+                return ResponseEntity.ok(product);
+            } else {
+                return new ResponseEntity<>("upDate thất bại", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("update thất bại", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("upDate thất bại", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("Elasticsearch/deleteProduct/{id}")
     public ResponseEntity<?> deleteProductElasticsearch(@PathVariable Integer id) {
-//        Products products = productsSevice.findbyidProducts(id);
-        productsSevice.deleteProduct(id);
-        String logMessage = "" + id;
-        kafkaTemplate.send("deleteProduct", logMessage);
-        return ResponseEntity.ok("delete Thành công");
+        Products products = productsSevice.findbyidProducts(id);
+        if (products != null) {
+            productsSevice.deleteProduct(id);
+            String logMessage = "" + id;
+            kafkaTemplate.send("deleteProduct", logMessage);
+            return ResponseEntity.ok("delete Thành công");
+        } else {
+            return ResponseEntity.ok("thất bại");
+        }
+
     }
 
 }

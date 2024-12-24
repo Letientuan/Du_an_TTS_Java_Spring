@@ -1,6 +1,8 @@
 package com.example.Du_An_TTS_Test.Sevice;
 
+import com.example.Du_An_TTS_Test.Dto.ProductsElasticsearch;
 import com.example.Du_An_TTS_Test.Entity.Products;
+import com.example.Du_An_TTS_Test.Map.ProductsMapper;
 import com.example.Du_An_TTS_Test.Repository.ProductsRepo;
 import com.example.Du_An_TTS_Test.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import java.util.Optional;
 public class ProductsSevice {
     @Autowired
     private ProductsRepo productsRepo;
+
+
 
     @Cacheable(value = "Products", key = "#id")
     public Products findbyidProduct(Integer id) {
@@ -35,7 +39,6 @@ public class ProductsSevice {
     @CachePut(value = "Products", key = "#products.id")
     public Products addProduct(Products products) {
         Products savedProduct = productsRepo.save(products);
-
         return savedProduct;
     }
 
@@ -48,13 +51,13 @@ public class ProductsSevice {
 
     //    lắng nghe kafka
 
-    public Products Updateview(Integer ID) {
+    public Products updateView(Integer ID) {
         Products products = findbyidProduct(ID);
-        return update(ID, products.getView().intValue());
+        return upDate(ID, products.getView().intValue());
     }
 
     @CacheEvict(value = "Products", key = "#id")
-    public Products update(Integer id, Number view) {
+    public Products upDate(Integer id, Number view) {
         Optional<Products> optional = productsRepo.findById(id);
         return optional.map(o -> {
             o.setView(view.intValue() + 1);
@@ -63,22 +66,29 @@ public class ProductsSevice {
         }).orElseThrow(()
                 -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
     }
-
     @CacheEvict(value = "Products", key = "#id")
-    public Products updateProduct(Integer id, Products products) {
-        Optional<Products> optional = productsRepo.findById(id);
-        return optional.map(o -> {
-            o.setView(products.getView().intValue() + 1);
-            o.setPrice(products.getPrice());
-            o.setCreated_at(products.getCreated_at());
-            o.setName(products.getName());
-            o.setUpdated_at(products.getUpdated_at());
-            o.setStock_quantity(products.getStock_quantity());
-            o.setCreated_by(products.getCreated_by());
-            Products products1 = productsRepo.save(o);
-            return products1;
-        }).orElseThrow(()
-                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
+    public Products updateProduct(Integer id, ProductsElasticsearch products) {
+        Products optional = productsRepo.findById(id).get();
+        ProductsMapper.PRODUCTS_MAPPER.updateEntityFromDto(products,optional);
+        return productsRepo.save(optional);
     }
+
+//    @CacheEvict(value = "Products", key = "#id")
+//    public Products updateProduct(Integer id, ProductsElasticsearch products) {
+//        Optional<Products> optional = productsRepo.findById(id);
+//        productsMapper.updateEntityFromDto(products,optional.get());
+//        return optional.map(o -> {
+//            o.setView(products.getView().intValue() + 1);
+//            o.setPrice(products.getPrice());
+//            o.setCreated_at(products.getCreated_at());
+//            o.setName(products.getName());
+//            o.setUpdated_at(products.getUpdated_at());
+//            o.setStock_quantity(products.getStock_quantity());
+//            o.setCreated_by(products.getCreated_by());
+//            Products products1 = productsRepo.save(o);
+//            return products1;
+//        }).orElseThrow(()
+//                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
+//    }
 
 }

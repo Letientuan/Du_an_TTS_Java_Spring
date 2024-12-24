@@ -23,7 +23,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class Products implements Serializable{
+public class Products implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

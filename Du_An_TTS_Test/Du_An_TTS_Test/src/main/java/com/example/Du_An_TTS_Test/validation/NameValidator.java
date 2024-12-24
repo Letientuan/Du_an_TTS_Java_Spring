@@ -5,9 +5,10 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.Objects;
 
-public class NameValidator implements ConstraintValidator<NameConstraint,String> {
+public class NameValidator implements ConstraintValidator<NameConstraint, String> {
 
     private int min;
+
     @Override
     public void initialize(NameConstraint constraintAnnotation) {
 
@@ -18,7 +19,7 @@ public class NameValidator implements ConstraintValidator<NameConstraint,String>
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
 
-        if(Objects.isNull(s))
+        if (Objects.isNull(s))
             return true;
         return false;
     }

@@ -20,8 +20,6 @@ public enum ErrorCode {
     UPDTAEDL_FAlSE(1009, "System error", HttpStatus.BAD_REQUEST),
     INVALID_NAME(1010, "No Name found", HttpStatus.BAD_REQUEST),
 
-
-
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

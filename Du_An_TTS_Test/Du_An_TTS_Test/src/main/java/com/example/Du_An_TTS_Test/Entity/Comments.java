@@ -1,5 +1,6 @@
 package com.example.Du_An_TTS_Test.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class Comments {
     private Users user_id;
 
     @ManyToOne
+    @JsonIgnore
     private Products product;
 
     @NotNull(message = "Comment text cannot be null")

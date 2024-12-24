@@ -1,5 +1,6 @@
 package com.example.Du_An_TTS_Test.Controller;
 
+import com.cloudinary.Cloudinary;
 import com.example.Du_An_TTS_Test.Dto.ProductsElasticsearch;
 import com.example.Du_An_TTS_Test.Sevice.ProductsSevice;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,6 +13,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.example.Du_An_TTS_Test.Entity.Products;
+
+
+import java.io.IOException;
 
 
 @Controller
@@ -27,6 +31,8 @@ public class productsController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private Cloudinary cloudinary;
 
     private static final String TOPIC = "updateViewID";
 
@@ -46,7 +52,12 @@ public class productsController {
     }
 
     @PostMapping("add/Elasticsearch")
-    public ResponseEntity<?> addProductElasticsearch(@Valid @RequestBody Products products1) throws JsonProcessingException {
+    public ResponseEntity<?> addProductElasticsearch(@Valid @RequestBody Products products1)
+            throws IOException {
+//
+//        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+//        String imageUrl = (String) uploadResult.get("secure_url");
+
         products1.setView(1);
         Products products = productsSevice.addProduct(products1);
         String logMessage = objectMapper.writeValueAsString(products);
@@ -63,9 +74,9 @@ public class productsController {
             Products products = productsSevice.updateProduct(id, product);
             if (products != null) {
 
-                String logMessage = objectMapper.writeValueAsString(product);
+                String logMessage = objectMapper.writeValueAsString(products);
                 kafkaTemplate.send("updateProduct", logMessage);
-                return ResponseEntity.ok(product);
+                return ResponseEntity.ok(products);
             } else {
                 return new ResponseEntity<>("upDate thất bại", HttpStatus.INTERNAL_SERVER_ERROR);
             }

@@ -20,6 +20,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 public class UserElasticsearch {
+
     @Id
     private Integer id;
 

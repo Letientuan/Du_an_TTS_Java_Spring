@@ -15,5 +15,6 @@ public interface ProductsMapper {
     void updateEntityFromDto(ProductsElasticsearch productsElasticsearch, @MappingTarget Products products);
 
     ProductsElasticsearch productsElasticsearch(Products products);
+
     Products productMapperToProduct(ProductsElasticsearch productDto);
 }

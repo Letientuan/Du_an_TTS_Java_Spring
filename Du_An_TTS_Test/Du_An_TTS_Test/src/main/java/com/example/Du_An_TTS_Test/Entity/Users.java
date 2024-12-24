@@ -20,12 +20,12 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-//    @NotNull(message = "username cannot be null")
-//    @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
+    @NotNull(message = "username cannot be null")
+    @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String username;
-//
-//    @NotEmpty(message = "Password must be 8 characters or more")
-//    @Min(value = 8, message = "Password must be 8 characters or more")
+
+    @NotEmpty(message = "Password must be 8 characters or more")
+    @Min(value = 8, message = "Password must be 8 characters or more")
     String password;
 
 

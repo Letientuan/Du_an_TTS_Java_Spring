@@ -34,21 +34,22 @@ public class SecurityConfig {
 
 
     private final String[] PUBLIC_ENDPOINS = {
-            "/User/add", "comment/add",
+             "comment/add",
             "/auth/introspect", "/comment/**"
     };
     private final String[] PUBLIC_ADMIN_GET = {
             "/User/getAll", "/User/matchAllUser"
     };
     private final String[] PUBLIC_ADMIN_DELETE = {
-            "Admin/products/Elasticsearch/deleteProduct",
+            "/Admin/products/Elasticsearch/deleteProduct/**",
             "ElasticSearch/User/delete"
+
     };
     private final String[] User = {
             "/Admin/products/ProductDetail/**",
             "/ElasticSearch/Product/matchAllProduct",
             "/auth/login", "/auth/logout",
-            "comment"
+            "comment/getall","/User/add"
     };
 
 
@@ -61,7 +62,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ADMIN_GET).hasAuthority("SCOP_ADMIN")
                         .requestMatchers(HttpMethod.POST, "Admin/products/add/Elasticsearch").hasAuthority("SCOP_ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "admin/products/Elasticsearch/updateProduct/**").hasAuthority("SCOP_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "Admin/products/Elasticsearch/updateProduct/**").hasAuthority("SCOP_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, PUBLIC_ADMIN_DELETE).hasAuthority("SCOP_ADMIN")
                         .anyRequest()
                         .authenticated())

@@ -7,9 +7,10 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 public interface UserMapper {
+
+
     UserMapper USER_MAPPER = Mappers.getMapper(UserMapper.class);
 
     void updateUserFromDto(UserElasticsearch userElasticsearch, @MappingTarget Users users);
 
-    UserElasticsearch productsElasticsearch(Users products);
 }

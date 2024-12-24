@@ -10,7 +10,7 @@ import java.util.List;
 public class JwtTokenUtil {
     @NonFinal
     @Value("${jwt.signerky}")
-    protected String secretKey ;
+    protected String secretKey;
 
     // Giải mã JWT và lấy thông tin người dùng từ token
     public Claims extractClaims(String token) {

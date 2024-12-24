@@ -25,13 +25,6 @@ public class ProductElsaticSearchController {
     @Autowired
     private ElastcSearchSevice elastcSearchSevice;
 
-    @GetMapping("getAll")
-    public ResponseEntity<?> getAllProducElastic() {
-        Iterable<ProductsElasticsearch> products = productsElasticsearchSevice.getProducts();
-
-        return ResponseEntity.ok(products);
-    }
-
     @GetMapping("matchAll")
     public SearchResponse<Map> matchAll() throws IOException {
         SearchResponse<Map> mapSearchResponse = elastcSearchSevice.matchAllSevice();

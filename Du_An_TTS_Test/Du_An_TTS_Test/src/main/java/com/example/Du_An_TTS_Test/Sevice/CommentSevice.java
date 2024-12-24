@@ -34,17 +34,17 @@ public class CommentSevice {
                 -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
     }
 
-//    public Comments update(Integer id, Comments newcomments) {
-//        Optional<Comments> optional = commentRepo.findById(id);
-//        return optional.map(o -> {
-//            o.setComment_text(newcomments.getComment_text());
-//            o.setUser_id(newcomments.getUser_id());
-//            o.setProduct_id(newcomments.getProduct_id());
-//            o.setCreated_at(newcomments.getCreated_at());
-//            o.setComment_text(newcomments.getComment_text());
-//            return commentRepo.save(o);
-//        }).orElseThrow(()
-//                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
-//    }
+    public Comments update(Integer id, Comments newcomments) {
+        Optional<Comments> optional = commentRepo.findById(id);
+        return optional.map(o -> {
+            o.setComment_text(newcomments.getComment_text());
+            o.setUser_id(newcomments.getUser_id());
+            o.setProduct(newcomments.getProduct());
+            o.setCreated_at(newcomments.getCreated_at());
+            o.setComment_text(newcomments.getComment_text());
+            return commentRepo.save(o);
+        }).orElseThrow(()
+                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
+    }
 
 }

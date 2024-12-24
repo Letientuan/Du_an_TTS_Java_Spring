@@ -16,10 +16,9 @@ import java.util.Optional;
 
 @Service
 public class ProductsSevice {
+
     @Autowired
     private ProductsRepo productsRepo;
-
-
 
     @Cacheable(value = "Products", key = "#id")
     public Products findbyidProduct(Integer id) {
@@ -49,7 +48,6 @@ public class ProductsSevice {
         productsRepo.deleteById(products.getId());
     }
 
-    //    lắng nghe kafka
 
     public Products updateView(Integer ID) {
         Products products = findbyidProduct(ID);
@@ -66,29 +64,12 @@ public class ProductsSevice {
         }).orElseThrow(()
                 -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
     }
+
     @CacheEvict(value = "Products", key = "#id")
     public Products updateProduct(Integer id, ProductsElasticsearch products) {
         Products optional = productsRepo.findById(id).get();
-        ProductsMapper.PRODUCTS_MAPPER.updateEntityFromDto(products,optional);
+        ProductsMapper.PRODUCTS_MAPPER.updateEntityFromDto(products, optional);
         return productsRepo.save(optional);
     }
-
-//    @CacheEvict(value = "Products", key = "#id")
-//    public Products updateProduct(Integer id, ProductsElasticsearch products) {
-//        Optional<Products> optional = productsRepo.findById(id);
-//        productsMapper.updateEntityFromDto(products,optional.get());
-//        return optional.map(o -> {
-//            o.setView(products.getView().intValue() + 1);
-//            o.setPrice(products.getPrice());
-//            o.setCreated_at(products.getCreated_at());
-//            o.setName(products.getName());
-//            o.setUpdated_at(products.getUpdated_at());
-//            o.setStock_quantity(products.getStock_quantity());
-//            o.setCreated_by(products.getCreated_by());
-//            Products products1 = productsRepo.save(o);
-//            return products1;
-//        }).orElseThrow(()
-//                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
-//    }
 
 }

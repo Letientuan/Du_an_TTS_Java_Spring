@@ -8,9 +8,12 @@ import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -28,6 +31,9 @@ public class Products implements Serializable{
     @NotNull(message = "name cannot be null")
     @Length(min = 5, max = 512, message = "Product name must be between 5-512 characters")
     private String name;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comments> comments = new ArrayList<>();
 
     @NotNull(message = "price cannot be null")
     private Double price;

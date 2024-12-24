@@ -36,16 +36,16 @@ public class comentsController {
 
     }
 
-    @PostMapping("update/{id}")
-    public ResponseEntity<?> updateComment(@PathVariable Integer id, @RequestBody Comments Comments) {
-        Optional<Comments> optional = commentRepo.findById(id);
-        if (optional.isEmpty()) {
-            return ResponseEntity.ok("Không tìm thấy comments có id : " + id);
-        }
-        Comments commentslist = commentSevice.update(id, Comments);
-        return ResponseEntity.ok(commentslist);
-
-    }
+//    @PostMapping("update/{id}")
+//    public ResponseEntity<?> updateComment(@PathVariable Integer id, @RequestBody Comments Comments) {
+//        Optional<Comments> optional = commentRepo.findById(id);
+//        if (optional.isEmpty()) {
+//            return ResponseEntity.ok("Không tìm thấy comments có id : " + id);
+//        }
+//        Comments commentslist = commentSevice.update(id, Comments);
+//        return ResponseEntity.ok(commentslist);
+//
+//    }
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable Integer id) {

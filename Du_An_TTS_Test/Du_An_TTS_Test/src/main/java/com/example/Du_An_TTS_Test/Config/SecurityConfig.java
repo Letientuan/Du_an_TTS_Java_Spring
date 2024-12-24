@@ -47,7 +47,8 @@ public class SecurityConfig {
     private final String[] User = {
             "/Admin/products/ProductDetail/**",
             "/ElasticSearch/Product/matchAllProduct",
-            "/auth/login", "/auth/logout"
+            "/auth/login", "/auth/logout",
+            "comment"
     };
 
 

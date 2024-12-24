@@ -24,8 +24,7 @@ public class Comments {
     private Users user_id;
 
     @ManyToOne
-    @NotNull(message = "product cannot be null")
-    private Products product_id;
+    private Products product;
 
     @NotNull(message = "Comment text cannot be null")
     private String comment_text;

@@ -7,16 +7,15 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class InvalidatedToken {
     @Id
     String id;
-
     Date expiryTime;
 }

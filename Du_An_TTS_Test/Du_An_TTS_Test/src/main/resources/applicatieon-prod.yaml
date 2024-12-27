@@ -1,7 +1,7 @@
-#jwt:
-#  signerky: ${SIGNER_KEY}
-#  valid-duration: 7200
-#  refreshable-duration: 72000
-#grpc:
-#  server:
-#    port: 9090
+jwt:
+  signerky: ${SIGNER_KEY}
+  valid-duration: 7200
+  refreshable-duration: 72000
+grpc:
+  server:
+    port: 9090

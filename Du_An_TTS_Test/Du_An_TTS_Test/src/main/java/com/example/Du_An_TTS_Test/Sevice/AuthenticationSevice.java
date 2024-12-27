@@ -5,7 +5,7 @@ import com.example.Du_An_TTS_Test.Dto.Repon.introspectRepon;
 import com.example.Du_An_TTS_Test.Dto.Repon.logoutRequet;
 import com.example.Du_An_TTS_Test.Dto.Request.AuthenticationRequest;
 import com.example.Du_An_TTS_Test.Entity.InvalidatedToken;
-import com.example.Du_An_TTS_Test.Entity.Users;
+import com.example.Du_An_TTS_Test.Entity.User;
 import com.example.Du_An_TTS_Test.Repository.InvalidateTonkenRepo;
 
 import com.example.Du_An_TTS_Test.Repository.UsersRepo;
@@ -16,6 +16,8 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,14 +27,15 @@ import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.converter.ClaimTypeConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
@@ -130,17 +133,18 @@ public class AuthenticationSevice {
                 .build();
     }
 
-    private String generateToken(Users user) {
+    private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername())
+                .subject(String.valueOf(user.getUsername()))
                 .issuer("vissoft.com")
                 .issueTime(new Date())
                 .jwtID(UUID.randomUUID().toString())
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
                 .claim("scop", buildScope(user))
+                .claim("id_user", user.getId())
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(header, payload);
@@ -154,7 +158,7 @@ public class AuthenticationSevice {
 
     }
 
-    private String buildScope(Users user) {
+    private String buildScope(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
         if (!CollectionUtils.isEmpty(user.getRoles()))
             user.getRoles().forEach(role -> {
@@ -165,6 +169,7 @@ public class AuthenticationSevice {
 
         return stringJoiner.toString();
     }
+
 }
 
 

@@ -33,23 +33,23 @@ public class SecurityConfig {
     CustomJwtDecoder customJwtDecoder;
 
 
-    private final String[] PUBLIC_ENDPOINS = {
-             "comment/add",
-            "/auth/introspect", "/comment/**"
-    };
+//    private final String[] PUBLIC_ENDPOINS = {
+//             "comment/add",
+//            "/auth/introspect", "/comment/**"
+//    };
     private final String[] PUBLIC_ADMIN_GET = {
             "/User/getAll", "/User/matchAllUser"
     };
     private final String[] PUBLIC_ADMIN_DELETE = {
             "/Admin/products/Elasticsearch/deleteProduct/**",
-            "ElasticSearch/User/delete"
+            "Admin/products/delete/**"
 
     };
     private final String[] User = {
-            "/Admin/products/ProductDetail/**",
-            "/ElasticSearch/Product/matchAllProduct",
+            "Admin/products/productdetail/**",
+            "Admin/products/matchAllProduct",
             "/auth/login", "/auth/logout",
-            "comment/getall","/User/add"
+            "/User/add","/comment/getall"
     };
 
 
@@ -59,10 +59,10 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(User).permitAll()
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINS).permitAll()
+//                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ADMIN_GET).hasAuthority("SCOP_ADMIN")
-                        .requestMatchers(HttpMethod.POST, "Admin/products/add/Elasticsearch").hasAuthority("SCOP_ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "Admin/products/Elasticsearch/updateProduct/**").hasAuthority("SCOP_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/Admin/products/add").hasAuthority("SCOP_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "Admin/products/update/**").hasAuthority("SCOP_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, PUBLIC_ADMIN_DELETE).hasAuthority("SCOP_ADMIN")
                         .anyRequest()
                         .authenticated())
@@ -87,7 +87,6 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-
 
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 

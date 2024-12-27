@@ -6,11 +6,10 @@ import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class Permission {

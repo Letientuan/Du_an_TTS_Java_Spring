@@ -1,53 +1,57 @@
 package com.example.Du_An_TTS_Test.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.awt.*;
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-
+@Builder
 @Entity
-@Getter
-@Setter
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 
-public class Products implements Serializable {
+public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @NotNull(message = "name cannot be null")
     @Length(min = 5, max = 512, message = "Product name must be between 5-512 characters")
-    private String name;
+    String name;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comments> comments = new ArrayList<>();
+    List<Comment> comments ;
+
+    public List<Comment> getComments() {
+        return comments;
+    }
 
     @NotNull(message = "price cannot be null")
-    private Double price;
+    Double price;
 
-    @NotNull(message = "stock_quantity cannot be null")
-    private Integer stock_quantity;
+    @NotNull(message = "quantity cannot be null")
+    Integer quantity;
 
-    private String created_at;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    LocalDateTime createdAt;
 
-    private String updated_at;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    LocalDateTime updatedAt;
 
-    private Integer created_by;
+    Integer createdBy;
 
-    private Number view;
+    Number view;
 
 }

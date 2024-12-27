@@ -1,16 +1,20 @@
 package com.example.Du_An_TTS_Test.Sevice;
 
-import com.example.Du_An_TTS_Test.Dto.UserElasticsearch;
+import com.example.Du_An_TTS_Test.Dto.UserDto;
 import com.example.Du_An_TTS_Test.Entity.Role;
-import com.example.Du_An_TTS_Test.Entity.Users;
+import com.example.Du_An_TTS_Test.Entity.User;
 import com.example.Du_An_TTS_Test.Map.UserMapper;
 import com.example.Du_An_TTS_Test.Repository.RoleRepo;
 import com.example.Du_An_TTS_Test.Repository.UsersRepo;
 import com.example.Du_An_TTS_Test.exception.ErrorCode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -26,49 +30,84 @@ public class UsersSevice {
     @Autowired
     RoleRepo roleRepo;
 
-    public List<Users> getAll() {
-        List<Users> usersList = usersRepo.findAll();
-        return usersList;
-    }
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
 
-    public Users findByUsername(String username) {
-        return usersRepo.findByUsername(username).orElseThrow(()
-                -> new RuntimeException(ErrorCode.INVALID_NAME.getMessage()));
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    LocalDateTime currentDateTime = LocalDateTime.now();
+
+    public List<User> findAll() {
+        return usersRepo.findAll();
     }
 
     public void deleteUser(Integer id) {
-        usersRepo.deleteById(id);
-    }
-
-    public Users addUser(Users user) {
-
-        Users users = new Users();
-        users.setUsername(user.getUsername());
-        Set<Role> role = new HashSet<>();
-        Role roles = new Role();
-        roles.setName("USER");
-        roles.setDescription("WHITE");
-
-        Optional<Role> role1 = roleRepo.findById(roles.getName());
-        if (role1.isEmpty()) {
-            roleRepo.save(roles);
-            role.add(roles);
+        try {
+            usersRepo.deleteById(id);
+            String logMessage = "" + id;
+            kafkaTemplate.send("deleteUser", logMessage);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-
-        users.setRoles(role);
-        users.setPassword(passwordEncoder.encode(user.getPassword()));
-        users.setCreated_at(user.getCreated_at());
-        users.setUpdated_at(user.getCreated_at());
-        users.setEmail(user.getEmail());
-
-        return usersRepo.save(users);
     }
 
-    public Users updateUser(Integer id, UserElasticsearch users) {
-        Users optional = usersRepo.findById(id).orElseThrow(()
-                -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
-        UserMapper.USER_MAPPER.updateUserFromDto(users, optional);
-        return usersRepo.save(optional);
+    public Boolean addUser(UserDto user) {
+        try {
+            User users = new User();
 
+            users.setUsername(user.getUsername());
+
+            Set<Role> role = new HashSet<>();
+            Role roles = new Role();
+            roles.setName("USER");
+            roles.setDescription("WHITE");
+
+            Optional<Role> roleid = roleRepo.findById(roles.getName());
+
+            if (roleid.isEmpty()) {
+                roleRepo.save(roles);
+                role.add(roles);
+            }
+
+            users.setRoles(role);
+            users.setPassword(passwordEncoder.encode(user.getPassword()));
+            users.setCreatedAt(currentDateTime);
+            users.setEmail(user.getEmail());
+
+            User newUser = usersRepo.save(users);
+            if (newUser != null) {
+
+                String logMessage = objectMapper.writeValueAsString(newUser);
+                kafkaTemplate.send("addUser", logMessage);
+
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+    public Boolean updateUser(Integer id, UserDto users) {
+        try {
+            User optional = usersRepo.findById(id).orElseThrow(()
+                    -> new RuntimeException(ErrorCode.INVALID_ID.getMessage()));
+
+            optional.setUpdatedAt(currentDateTime);
+            optional.setEmail(users.getEmail());
+            optional.setPassword(passwordEncoder.encode(users.getPassword()));
+
+            User newUser = usersRepo.save(optional);
+
+            String logMessage = objectMapper.writeValueAsString(newUser);
+            kafkaTemplate.send("updateUser", logMessage);
+
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
     }
 }

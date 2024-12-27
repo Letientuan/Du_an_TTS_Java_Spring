@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.sql.Date;
@@ -18,24 +19,26 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 
-public class UserElasticsearch {
+public class UserDto {
 
     @Id
-    private Integer id;
+    Integer id;
 
-    private String username;
+    String username;
 
-    private String password;
+    String password;
 
-    private String email;
+    String email;
 
-    @ManyToMany
-    @NotNull(message = "roles cannot be null")
-    private Set<Role> roles;
+    Set<Role> roles;
 
-    private String created_at;
+    String createdAt;
 
-    private String updated_at;
+    String updatedAt;
 
+
+    public UserDto(String userId) {
+    }
 }

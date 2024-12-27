@@ -5,17 +5,18 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Set;
 
-@Getter
-@Setter
+
 @Builder
+@Data
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity
-
-public class Users {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
@@ -24,10 +25,8 @@ public class Users {
     @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String username;
 
-    @NotEmpty(message = "Password must be 8 characters or more")
-    @Min(value = 8, message = "Password must be 8 characters or more")
+    @NotNull(message = "password cannot be null")
     String password;
-
 
     String email;
 
@@ -35,7 +34,11 @@ public class Users {
     @NotNull(message = "roles cannot be null")
     Set<Role> roles;
 
-    String created_at;
 
-    String updated_at;
+    LocalDateTime createdAt;
+
+
+    LocalDateTime updatedAt;
+
+
 }

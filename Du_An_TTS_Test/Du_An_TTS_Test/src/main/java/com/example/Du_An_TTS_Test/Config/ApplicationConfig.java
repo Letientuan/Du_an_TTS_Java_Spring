@@ -2,7 +2,7 @@ package com.example.Du_An_TTS_Test.Config;
 
 import com.example.Du_An_TTS_Test.Entity.Permission;
 import com.example.Du_An_TTS_Test.Entity.Role;
-import com.example.Du_An_TTS_Test.Entity.Users;
+import com.example.Du_An_TTS_Test.Entity.User;
 import com.example.Du_An_TTS_Test.Repository.PermissionRepo;
 import com.example.Du_An_TTS_Test.Repository.RoleRepo;
 import com.example.Du_An_TTS_Test.Repository.UsersRepo;
@@ -58,12 +58,12 @@ public class ApplicationConfig {
                 roles.setName(role1.getName());
                 role.add(roles);
 
-                Users users = Users.builder()
+                User user = User.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("admin"))
                         .roles(role)
                         .build();
-                usersRepo.save(users);
+                usersRepo.save(user);
             }
         };
     }
